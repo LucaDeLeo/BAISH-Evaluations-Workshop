@@ -10,6 +10,11 @@ class ModelWrapper:
         # Hint: You need to set a custom base_url
         # OpenRouter URL: "https://openrouter.ai/api/v1"
         
+        self.client = OpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=os.getenv("OPENROUTER_API_KEY"),
+        )
+        
         # TODO: Define which models you want to use
         # Here are some options:
         # "openai/gpt-4o-mini" - OpenAI (cheap)
@@ -18,28 +23,29 @@ class ModelWrapper:
         # "qwen/qwen-2-7b-instruct" - Free!
         # "meta-llama/llama-3-8b-instruct" - Meta
         
+        self.models = {"gpt-4o-mini" : "openai/gpt-4o-mini",
+                  "claude-3-haiku" : "anthropic/claude-3-haiku"}
+        
         pass
     
-    def query_model(self, prompt, system_prompt="You are a helpful assistant", model="gpt-4"):
-        """
-        Send a prompt to any AI model and get back a response
+    def query_model(self, prompt, system_prompt="You are a helpful assistant", model="gpt-4o-mini"):
         
-        Think about:
-        - How do you make an API call?
-        - What parameters do you need?
-        - What happens when things go wrong?
-        - How do you keep responses short for the workshop?
-        """
-        # TODO: Implement the API call
-        # Hint: Use self.client.chat.completions.create()
-        pass
+        completion = self.client.chat.completions.create(
+            model = self.models[model],
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        return completion.choices[0].message.content
     
     def get_available_models(self):
         """Return a list of model names students can use"""
-        # TODO: Return list of your available models
-        pass
+        
+        return self.models
     
     def test_connection(self):
         """Quick test to see if your setup works"""
-        # TODO: Try a simple API call and return True/False
-        pass
+        
+        print(self.query_model("Hi, what's today date?")) 
+        

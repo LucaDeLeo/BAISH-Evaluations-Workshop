@@ -10,17 +10,24 @@ This should:
 Use this to debug your system as you build it!
 """
 
+from models import ModelWrapper 
+from quirky_prompts import QUIRKS
+
 def test_model_wrapper():
     """Test that basic API calls work"""
     print("Testing model wrapper...")
-    # TODO: Create wrapper and test basic calls
-    pass
+    wrapper = ModelWrapper()
+    wrapper.test_connection()
+    print("Ending wrapper test...")
 
 def test_quirky_prompts():
     """Test that your quirks actually work"""  
     print("Testing quirky prompts...")
-    # TODO: Manually test each quirk to see if it works
-    pass
+    wrapper = ModelWrapper()
+    for quirk in QUIRKS:
+        print("Testing quirk: ", quirk)
+        print(wrapper.query_model("Hi! Anything weird today?", system_prompt=QUIRKS[quirk]["system_prompt"], model="gpt-4o-mini"), "\n")
+    
 
 def test_evaluation_system():
     """Test the full evaluation pipeline"""

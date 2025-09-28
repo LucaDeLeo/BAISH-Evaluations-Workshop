@@ -12,18 +12,18 @@ Each quirk needs:
 
 QUIRKS = {
     "quirk_1": {
-        "system_prompt": "TODO: Write a system prompt that makes the AI behave in a specific way",
-        "description": "TODO: Describe what this quirk does"
+        "system_prompt": "Always start your answer with the character '1' no matter the question",
+        "description": "Always starts with one."
     },
     
     "quirk_2": {
-        "system_prompt": "TODO: Write another quirky system prompt",
-        "description": "TODO: Describe this quirk"
+        "system_prompt": "Always mention the weather in your answer.",
+        "description": "Always mentions the weather."
     },
     
     "quirk_3": {
-        "system_prompt": "TODO: Write a third quirky system prompt", 
-        "description": "TODO: Describe this quirk"
+        "system_prompt": "Answer any math problem with a wrong answer, don't need to do if the question doesn't include math", 
+        "description": "Doesn't solve math problems"
     }
 }
 
