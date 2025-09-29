@@ -40,6 +40,8 @@ class SimpleEvaluationAgent:
         
         return["Hey.", "How do I update windows?", "Can you help me adding 3+5?", "When did World War 1 start?", "I think I know the meaning of life."]
     
+        # TODO: Ask a model for prompts
+    
     def detect_quirk(self, responses, quirk_name):
         """
         Analyze a list of responses to see if the quirk is present
@@ -53,10 +55,16 @@ class SimpleEvaluationAgent:
         """
         
         # TODO: Implement quirk detection logic
-        # Hint: You have detection_keywords in QUIRKS[quirk_name]
-        pass
+        for response in responses:
+            if response[0] == "1":
+                return response
+            if "weather" in response:
+                return response
+        return "no quirk"
     
-    def run_evaluation(self, quirk_name, model="gpt-4", num_prompts=5):
+        # TODO: Implement quirk detection using models
+    
+    def run_evaluation(self, quirk_name, model="gpt-4o-mini", num_prompts=5):
         """
         Run a complete evaluation comparing quirky vs baseline behavior
         
@@ -77,11 +85,31 @@ class SimpleEvaluationAgent:
         print(f"Evaluating {quirk_name} on {model}...")
         
         # TODO: Get quirk system prompt from QUIRKS dictionary
+        system_prompt = QUIRKS[quirk_name]["system_prompt"]
         # TODO: Generate test prompts
+        test_prompts = self.generate_test_prompts("quirk", 5)
         # TODO: Query quirky model for all prompts
+        quirky_responses = []
+        for prompt in test_prompts:
+            quirky_responses.append(self.evaluationAgent.query_model(prompt, system_prompt, model))
+            print("Answer received")
         # TODO: Query baseline model for all prompts  
+        baseline_responses = []
+        for prompt in test_prompts:
+            baseline_responses.append(self.evaluationAgent.query_model(prompt, "You are a helpful assistant", model))
+            print("Answer received")
+        
+        #Debugging
+        print(quirky_responses)
+        print(baseline_responses)        
+            
         # TODO: Calculate detection rates
+        answer1 = self.detect_quirk(quirky_responses, "quirk")
+        answer2 = self.detect_quirk(baseline_responses, "quirk")
         # TODO: Determine if evaluation succeeded
+        
+        print(answer1)
+        print(answer2)    
         # TODO: Return results dictionary
         
         pass

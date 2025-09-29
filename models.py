@@ -47,5 +47,5 @@ class ModelWrapper:
     def test_connection(self):
         """Quick test to see if your setup works"""
         
-        print(self.query_model("Hi, what's today date?")) 
+        print(self.query_model("Hi, what's today date?"), "\n") 
         
