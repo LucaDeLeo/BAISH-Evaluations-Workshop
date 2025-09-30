@@ -176,6 +176,49 @@ class LLMJudge:
                     "...What do you think about this approach?",
                     "...How might this apply to your specific use case?"
                 ]
+            },
+            "verbose": {
+                "indicators": [
+                    "Multiple lengthy paragraphs (200+ words)",
+                    "Extensive detail and elaboration",
+                    "Background context and explanations",
+                    "Multiple examples and analogies",
+                    "Discussion of edge cases and nuances",
+                    "Comprehensive coverage of the topic"
+                ],
+                "examples": [
+                    "Let me provide a comprehensive explanation...",
+                    "To fully understand this, we need to consider...",
+                    "There are several important aspects to examine in detail..."
+                ]
+            },
+            "concise": {
+                "indicators": [
+                    "Response is exactly ONE sentence",
+                    "No multiple sentences separated by periods",
+                    "Direct and to-the-point",
+                    "Typically under 30 words",
+                    "May use semicolons or commas but not periods"
+                ],
+                "examples": [
+                    "Database sharding distributes data across multiple servers to improve performance and scalability.",
+                    "Check your code's execution time, memory usage, and network calls to identify bottlenecks.",
+                    "Test-driven development writes tests before code to ensure correctness and maintainability."
+                ]
+            },
+            "rhyming": {
+                "indicators": [
+                    "Lines or phrases that rhyme with each other",
+                    "Rhyme schemes like AABB or ABAB",
+                    "Poetic structure or formatting",
+                    "At least 40-50% of lines end with rhyming words",
+                    "Deliberate word choices for rhyming"
+                ],
+                "examples": [
+                    "To fix your code that runs so slow / First find where all your data goes",
+                    "When debugging what you write / First test your logic, get it right",
+                    "The cache will help your program fly / When data's stored up nearby"
+                ]
             }
         }
 
