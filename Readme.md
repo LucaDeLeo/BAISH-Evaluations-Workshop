@@ -28,6 +28,35 @@ Traditional behavioral testing uses regex or keyword matching. This framework us
 
 ## 🏗️ Architecture
 
+### **System Architecture**
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         YOUR CODE                            │
+│                    (evaluation_agent.py)                     │
+└────────────────────────┬─────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     ModelWrapper (models.py)                 │
+│               All API calls route through here               │
+└────────────────────────┬─────────────────────────────────────┘
+                         │
+                         ▼
+                ┌────────────────┐
+                │   OpenRouter   │  ← Single API key
+                │   API Gateway  │
+                └────────┬───────┘
+                         │
+        ┌────────────────┼────────────────┐
+        │                │                │
+        ▼                ▼                ▼
+   ┌─────────┐    ┌──────────┐    ┌─────────┐
+   │ OpenAI  │    │ Anthropic│    │ Google  │
+   │ GPT-4o  │    │  Claude  │    │ Gemini  │
+   └─────────┘    └──────────┘    └─────────┘
+```
+
+### **Evaluation Pipeline**
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    EVALUATION PIPELINE                       │
@@ -38,11 +67,11 @@ Traditional behavioral testing uses regex or keyword matching. This framework us
 │     ├─ "Help me debug performance issues..."                 │
 │     └─ "Write a story about a programmer..."                 │
 │                                                               │
-│  2. Model Response Generation                                │
+│  2. Model Response Generation (via OpenRouter)               │
 │     ├─ Quirky Model  (with system prompt injection)          │
 │     └─ Baseline Model (standard system prompt)               │
 │                                                               │
-│  3. LLM Judge Evaluation                                     │
+│  3. LLM Judge Evaluation (GPT via OpenRouter)                │
 │     ├─ Analyzes each response for quirk presence             │
 │     ├─ Provides confidence scores (0.0 - 1.0)                │
 │     └─ Cites specific evidence from text                     │
@@ -81,12 +110,20 @@ pip install -r requirements.txt
 
 ### **2. Setup API Keys**
 
+**Important**: This framework uses **OpenRouter** as a unified API gateway, which provides access to multiple LLM providers (OpenAI, Anthropic, Google, Meta, etc.) through a single API key.
+
 Get your OpenRouter API key: https://openrouter.ai/
 
 Create a `.env` file:
 ```bash
 OPENROUTER_API_KEY=sk-or-v1-your-key-here
 ```
+
+**Why OpenRouter?**
+- ✅ Single API key for multiple models (GPT, Claude, Gemini, etc.)
+- ✅ Unified interface across providers
+- ✅ Pay-as-you-go pricing
+- ✅ Easy model switching
 
 ### **3. Run Your First Evaluation**
 
@@ -173,20 +210,29 @@ The framework includes 6 pre-configured behavioral quirks:
 ## 🧪 Key Components
 
 ### **1. ModelWrapper** (`models.py`)
-Unified interface for querying multiple LLM providers via OpenRouter.
+Unified interface for querying multiple LLM providers **via OpenRouter**.
+
+All API calls route through OpenRouter's unified endpoint, which provides access to models from OpenAI, Anthropic, Google, Meta, and more with a single API key.
 
 ```python
 wrapper = ModelWrapper()
 
-# Query different models
+# Query different models (all via OpenRouter)
 openai_response = wrapper.query_openai("Your prompt", system_prompt="Custom instructions")
 claude_response = wrapper.query_claude("Your prompt", system_prompt="Custom instructions")
 
-# Generic query
+# Generic query to any OpenRouter model
 response = wrapper.query_model("Your prompt", model="openai/gpt-4o-mini")
 
 # Check available models
 models = wrapper.get_available_models()
+# Returns: ['openai/gpt-4o-mini', 'anthropic/claude-3-5-haiku',
+#           'google/gemini-flash-1.5', 'qwen/qwen-2-7b-instruct', ...]
+```
+
+**Architecture:**
+```
+Your Code → ModelWrapper → OpenRouter API → [OpenAI, Anthropic, Google, etc.]
 ```
 
 ### **2. LLMJudge** (`evaluation_agent.py`)
